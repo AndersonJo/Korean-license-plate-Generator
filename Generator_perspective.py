@@ -2,6 +2,7 @@ import os, random
 import cv2, argparse
 import numpy as np
 
+
 def image_augmentation(img, type2=False):
     # perspective
     w, h, _ = img.shape
@@ -26,8 +27,8 @@ def image_augmentation(img, type2=False):
     img = cv2.cvtColor(img, cv2.COLOR_HSV2RGB)
 
     # Blur
-    blur_value = random.randint(0,4) * 2 + 1
-    img = cv2.blur(img,(blur_value, blur_value))
+    blur_value = random.randint(0, 4) * 2 + 1
+    img = cv2.blur(img, (blur_value, blur_value))
     if type2:
         return img[130:280, 180:600, :]
     return img[130:280, 120:660, :]
@@ -36,6 +37,9 @@ def image_augmentation(img, type2=False):
 class ImageGenerator:
     def __init__(self, save_path):
         self.save_path = save_path
+        if not os.path.exists(self.save_path):
+            os.makedirs(self.save_path)
+
         # Plate
         self.plate = cv2.imread("plate.jpg")
         self.plate2 = cv2.imread("plate_y.jpg")
@@ -95,7 +99,7 @@ class ImageGenerator:
             img = cv2.imread(img_path)
             self.Resion_y.append(img)
             self.resion_list_y.append(file[0:-4])
-        #=========================================================================
+        # =========================================================================
 
         # loading Number ====================  green-two-line  ==========================
         file_path = "./num_g/"
@@ -129,9 +133,7 @@ class ImageGenerator:
             img = cv2.imread(img_path)
             self.Resion_g.append(img)
             self.resion_list_g.append(file[0:-4])
-        #=========================================================================
-
-
+        # =========================================================================
 
     def Type_1(self, num, save=False):
         number = [cv2.resize(number, (56, 83)) for number in self.Number]
@@ -139,8 +141,8 @@ class ImageGenerator:
 
         for i, Iter in enumerate(range(num)):
             Plate = cv2.resize(self.plate, (520, 110))
-            b_width ,b_height = 400, 800
-            random_R, random_G, random_B = random.randint(0,255), random.randint(0,255), random.randint(0,255)
+            b_width, b_height = 400, 800
+            random_R, random_G, random_B = random.randint(0, 255), random.randint(0, 255), random.randint(0, 255)
             background = np.zeros((b_width, b_height, 3), np.uint8)
             cv2.rectangle(background, (0, 0), (b_height, b_width), (random_R, random_G, random_B), -1)
 
@@ -160,8 +162,8 @@ class ImageGenerator:
             col += 56
 
             # character 3
-            label += self.char_list[i%37]
-            Plate[row:row + 83, col:col + 60, :] = char[i%37]
+            label += self.char_list[i % 37]
+            Plate[row:row + 83, col:col + 60, :] = char[i % 37]
             col += (60 + 36)
 
             # number 4
@@ -188,12 +190,12 @@ class ImageGenerator:
             Plate[row:row + 83, col:col + 56, :] = number[rand_int]
             col += 56
 
-            s_width, s_height = int((400-110)/2), int((800-520)/2)
+            s_width, s_height = int((400 - 110) / 2), int((800 - 520) / 2)
             background[s_width:110 + s_width, s_height:520 + s_height, :] = Plate
             background = image_augmentation(background)
 
             if save:
-                cv2.imwrite(self.save_path + label + ".jpg", background)
+                cv2.imwrite(os.path.join(self.save_path, label + ".jpg"), background)
             else:
                 cv2.imshow(label, background)
                 cv2.waitKey(0)
@@ -225,8 +227,8 @@ class ImageGenerator:
             col += 45
 
             # number 3
-            label += self.char_list[i%37]
-            Plate[row + 12:row + 82, col + 2:col + 49 + 2, :] = char[i%37]
+            label += self.char_list[i % 37]
+            Plate[row + 12:row + 82, col + 2:col + 49 + 2, :] = char[i % 37]
             col += 49 + 2
 
             # number 4
@@ -258,7 +260,7 @@ class ImageGenerator:
             background = image_augmentation(background, type2=True)
 
             if save:
-                cv2.imwrite(self.save_path + label + ".jpg", background)
+                cv2.imwrite(os.path.join(self.save_path, label + ".jpg"), background)
             else:
                 cv2.imshow(label, background)
                 cv2.waitKey(0)
@@ -332,7 +334,7 @@ class ImageGenerator:
             background = image_augmentation(background, type2=True)
 
             if save:
-                cv2.imwrite(self.save_path + label + ".jpg", background)
+                cv2.imwrite(os.path.join(self.save_path, label + ".jpg"), background)
             else:
                 cv2.imshow(label, background)
                 cv2.waitKey(0)
@@ -406,7 +408,7 @@ class ImageGenerator:
             background = image_augmentation(background, type2=True)
 
             if save:
-                cv2.imwrite(self.save_path + label + ".jpg", background)
+                cv2.imwrite(os.path.join(self.save_path, label + ".jpg"), background)
             else:
                 cv2.imshow(label, background)
                 cv2.waitKey(0)
@@ -419,7 +421,7 @@ class ImageGenerator:
 
         for i, Iter in enumerate(range(num)):
             Plate = cv2.resize(self.plate3, (336, 170))
-            random_width, random_height =  400, 800
+            random_width, random_height = 400, 800
             random_R, random_G, random_B = random.randint(0, 255), random.randint(0, 255), random.randint(0, 255)
             background = np.zeros((random_width, random_height, 3), np.uint8)
             cv2.rectangle(background, (0, 0), (random_height, random_width), (random_R, random_G, random_B), -1)
@@ -441,8 +443,8 @@ class ImageGenerator:
             col += 60
 
             # character 3
-            label += self.char_list_g[i%37]
-            Plate[row:row + 65, col:col + 60, :] = char[i%37]
+            label += self.char_list_g[i % 37]
+            Plate[row:row + 65, col:col + 60, :] = char[i % 37]
             row, col = 75, 8
 
             # number 4
@@ -450,7 +452,6 @@ class ImageGenerator:
             label += self.number_list_g[rand_int]
             Plate[row:row + 90, col:col + 80, :] = number2[rand_int]
             col += 80
-
 
             # number 5
             rand_int = random.randint(0, 9)
@@ -475,7 +476,7 @@ class ImageGenerator:
             background = image_augmentation(background, type2=True)
 
             if save:
-                cv2.imwrite(self.save_path + label + ".jpg", background)
+                cv2.imwrite(os.path.join(self.save_path, label + ".jpg"), background)
             else:
                 cv2.imshow(label, background)
                 cv2.waitKey(0)
@@ -484,13 +485,10 @@ class ImageGenerator:
 
 parser = argparse.ArgumentParser()
 parser.add_argument("-i", "--img_dir", help="save image directory",
-                    type=str, default="../CRNN/DB/")
-parser.add_argument("-n", "--num", help="number of image",
-                    type=int)
-parser.add_argument("-s", "--save", help="save or imshow",
-                    type=bool, default=True)
+                    type=str, default="generated_images")
+parser.add_argument("-n", "--num", help="number of image", default=1000, type=int)
+parser.add_argument("-s", "--save", help="save or imshow", type=bool, default=True)
 args = parser.parse_args()
-
 
 img_dir = args.img_dir
 A = ImageGenerator(img_dir)
