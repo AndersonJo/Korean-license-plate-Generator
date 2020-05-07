@@ -1,5 +1,9 @@
+# Project
+.idea
+
 # Python
 *.pyc
+
 
 # Data
 generated_images
